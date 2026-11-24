@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>管理者ページ | ホテル予約システム (HRS)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+	:root {
+		--color-bg: #faf6ee;
+		--color-panel: #fffdf9;
+		--color-border: #e4d9c3;
+		--color-primary: #8c3a2b;
+		--color-primary-dark: #6e2b1f;
+		--color-accent: #3f5b45;
+		--color-text: #2b2620;
+		--color-muted: #83786a;
+		--color-success-bg: #edf3ea;
+		--color-success-text: #3f5b45;
+		--color-error-bg: #fbebe8;
+		--color-error-text: #8c3a2b;
+		--font-mincho: "Shippori Mincho", "Yu Mincho", "Hiragino Mincho ProN", serif;
+		--font-sans: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
+	}
+	* {
+		box-sizing: border-box;
+	}
+	body {
+		margin: 0;
+		font-family: var(--font-sans);
+		background: var(--color-bg);
+		color: var(--color-text);
+	}
+	h1, h2, h3 {
+		font-family: var(--font-mincho);
+	}
+	header.site-header {
+		background: linear-gradient(135deg, #2d2d2d 0%, #44392f 55%, #5a4a3a 100%);
+		color: #f6ede1;
+		padding: 48px 24px 40px;
+		text-align: center;
+		position: relative;
+		overflow: hidden;
+	}
+	header.site-header::before {
+		content: "";
+		position: absolute;
+		inset: 0;
+		background-image:
+			repeating-linear-gradient(45deg, rgba(255,255,255,0.035) 0 2px, transparent 2px 26px);
+		pointer-events: none;
+	}
+	.brand-eyebrow {
+		margin: 0 0 10px;
+		letter-spacing: 0.28em;
+		font-size: 11px;
+		color: #d8c9a8;
+		text-transform: uppercase;
+	}
+	header.site-header h1 {
+		margin: 0;
+		font-size: 30px;
+		font-weight: 700;
+		letter-spacing: 0.06em;
+	}
+	.brand-rule {
+		width: 64px;
+		height: 2px;
+		margin: 16px auto;
+		background: #d9b98c;
+		border: none;
+	}
+	main {
+		max-width: 860px;
+		margin: -28px auto 0;
+		padding: 0 16px 56px;
+		position: relative;
+	}
+	nav.tabs {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 4px;
+		margin-bottom: 20px;
+		background: var(--color-panel);
+		border: 1px solid var(--color-border);
+		border-radius: 12px;
+		padding: 6px;
+		box-shadow: 0 8px 24px rgba(60, 40, 20, 0.08);
+	}
+	nav.tabs button {
+		flex: 1 1 auto;
+		padding: 12px 10px;
+		border: none;
+		background: transparent;
+		color: var(--color-muted);
+		border-radius: 8px;
+		cursor: pointer;
+		font-size: 13px;
+		font-family: var(--font-sans);
+		font-weight: 500;
+		transition: background 0.15s ease, color 0.15s ease;
+	}
+	nav.tabs button:hover {
+		background: rgba(140, 58, 43, 0.08);
+	}
+	nav.tabs button.active {
+		background: var(--color-primary);
+		color: #fff9f0;
+	}
+	section.panel {
+		display: none;
+		background: var(--color-panel);
+		border: 1px solid var(--color-border);
+		border-radius: 12px;
+		padding: 28px;
+		box-shadow: 0 8px 24px rgba(60, 40, 20, 0.06);
+	}
+	section.panel.active {
+		display: block;
+	}
+	section.panel h2 {
+		margin: 0 0 4px;
+		font-size: 19px;
+		color: var(--color-primary-dark);
+	}
+	section.panel h2::after {
+		content: "";
+		display: block;
+		width: 36px;
+		height: 2px;
+		background: var(--color-primary);
+		margin: 10px 0 20px;
+	}
+	label {
+		display: block;
+		font-size: 13px;
+		color: var(--color-muted);
+		margin: 14px 0 5px;
+	}
+	input, select {
+		width: 100%;
+		padding: 9px 11px;
+		border: 1px solid var(--color-border);
+		border-radius: 6px;
+		font-size: 14px;
+		font-family: var(--font-sans);
+		background: #fff;
+		color: var(--color-text);
+	}
+	input:focus, select:focus {
+		outline: none;
+		border-color: var(--color-primary);
+	}
+	.row {
+		display: flex;
+		gap: 12px;
+	}
+	.row > div {
+		flex: 1;
+	}
+	button.action {
+		margin-top: 20px;
+		padding: 11px 22px;
+		border: none;
+		border-radius: 6px;
+		background: var(--color-primary);
+		color: #fff9f0;
+		font-size: 14px;
+		font-family: var(--font-sans);
+		font-weight: 500;
+		cursor: pointer;
+		letter-spacing: 0.03em;
+	}
+	button.action:hover {
+		background: var(--color-primary-dark);
+	}
+	.hidden {
+		display: none;
+	}
+	.result {
+		margin-top: 18px;
+		padding: 13px 15px;
+		border-radius: 8px;
+		font-size: 14px;
+		white-space: pre-line;
+		display: none;
+	}
+	.result.success {
+		display: block;
+		background: var(--color-success-bg);
+		color: var(--color-success-text);
+	}
+	.result.error {
+		display: block;
+		background: var(--color-error-bg);
+		color: var(--color-error-text);
+	}
+	/* ログインゲート */
+	#login-gate {
+		max-width: 360px;
+		margin: 60px auto 0;
+	}
+	button.action.secondary {
+		background: transparent;
+		color: var(--color-primary-dark);
+		border: 1px solid var(--color-border);
+	}
+	button.action.secondary:hover {
+		background: rgba(140, 58, 43, 0.06);
+	}
+	.occupancy-table {
+		width: 100%;
+		margin-top: 18px;
+		border-collapse: collapse;
+		font-size: 13.5px;
+	}
+	.occupancy-table th, .occupancy-table td {
+		text-align: left;
+		padding: 10px 8px;
+		border-bottom: 1px solid var(--color-border);
+	}
+	.occupancy-table th {
+		color: var(--color-muted);
+		font-weight: 500;
+	}
+	footer.site-footer {
+		background: #34211b;
+		color: #d9c9b4;
+		padding: 32px 24px;
+		text-align: center;
+		font-size: 13px;
+		line-height: 1.9;
+	}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+	<p class="brand-eyebrow">HRS ADMIN</p>
+	<h1>ホテル管理者ページ</h1>
+	<hr class="brand-rule">
+</header>
+
+<main>
+	<!-- ログインゲート -->
+	<section class="panel active" id="panel-login">
+		<div id="login-gate">
+			<h2>管理者ログイン</h2>
+			<label>管理者パスワード</label>
+			<input type="password" id="login-password">
+			<button class="action" onclick="login()">ログイン</button>
+			<div class="result" id="login-result"></div>
+		</div>
+	</section>
+
+	<div id="admin-content" class="hidden">
+		<nav class="tabs">
+			<button data-tab="checkin" class="active">チェックインする</button>
+			<button data-tab="checkout">チェックアウトする</button>
+			<button data-tab="register">部屋情報を登録する</button>
+			<button data-tab="rooms">部屋一覧・編集</button>
+			<button data-tab="occupancy">宿泊者一覧</button>
+		</nav>
+
+		<!-- UC4 -->
+		<section class="panel active" id="panel-checkin">
+			<h2>チェックインする</h2>
+			<label>予約番号</label>
+			<input type="text" id="checkin-number">
+			<button class="action" onclick="checkIn()">チェックインする</button>
+			<div class="result" id="checkin-result"></div>
+		</section>
+
+		<!-- UC5 -->
+		<section class="panel" id="panel-checkout">
+			<h2>チェックアウトする</h2>
+			<label>部屋番号</label>
+			<input type="text" id="checkout-roomnumber">
+			<button class="action" onclick="calculateFee()">宿泊料を計算する</button>
+			<div class="result" id="checkout-fee-result"></div>
+
+			<div id="checkout-payment" class="hidden">
+				<label>支払い方法</label>
+				<select id="checkout-method">
+					<option value="1">現金</option>
+					<option value="2">クレジット</option>
+				</select>
+				<button class="action" onclick="checkOut()">支払う（チェックアウト完了）</button>
+			</div>
+			<div class="result" id="checkout-result"></div>
+		</section>
+
+		<!-- UC6 -->
+		<section class="panel" id="panel-register">
+			<h2>部屋情報を登録する</h2>
+			<label>部屋番号</label>
+			<input type="text" id="register-roomnumber">
+			<label>部屋種別</label>
+			<select id="register-typename">
+				<option value="スタンダード">スタンダード（1人部屋）</option>
+				<option value="スイート">スイート（2人部屋）</option>
+			</select>
+			<label>部屋の愛称（任意）</label>
+			<input type="text" id="register-nickname" placeholder="例: さくら">
+			<div class="row">
+				<div>
+					<label>値段</label>
+					<input type="number" id="register-price" min="0" max="100000">
+				</div>
+				<div>
+					<label>喫煙区分</label>
+					<select id="register-smoking">
+						<option value="1">喫煙</option>
+						<option value="2">禁煙</option>
+					</select>
+				</div>
+			</div>
+			<button class="action" onclick="registerRoom()">登録する</button>
+			<div class="result" id="register-result"></div>
+		</section>
+
+		<!-- 部屋一覧・編集: 登録済みの部屋の一覧表示と情報変更 -->
+		<section class="panel" id="panel-rooms">
+			<h2>部屋一覧・編集</h2>
+			<button class="action secondary" onclick="loadRooms()">最新の状態に更新する</button>
+			<div class="result" id="rooms-result"></div>
+			<table class="occupancy-table hidden" id="rooms-table">
+				<thead>
+					<tr>
+						<th>部屋番号</th>
+						<th>部屋種別</th>
+						<th>値段</th>
+						<th>喫煙区分</th>
+						<th>愛称</th>
+						<th>状態</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody id="rooms-tbody"></tbody>
+			</table>
+
+			<div class="hidden" id="room-edit-form">
+				<h3 id="room-edit-title"></h3>
+				<label>部屋種別</label>
+				<select id="edit-typename">
+					<option value="スタンダード">スタンダード（1人部屋）</option>
+					<option value="スイート">スイート（2人部屋）</option>
+				</select>
+				<label>部屋の愛称</label>
+				<input type="text" id="edit-nickname" placeholder="例: さくら">
+				<div class="row">
+					<div>
+						<label>値段</label>
+						<input type="number" id="edit-price" min="0" max="100000">
+					</div>
+					<div>
+						<label>喫煙区分</label>
+						<select id="edit-smoking">
+							<option value="1">喫煙</option>
+							<option value="2">禁煙</option>
+						</select>
+					</div>
+				</div>
+				<div class="row">
+					<button class="action secondary" onclick="cancelEditRoom()">キャンセル</button>
+					<button class="action" onclick="saveRoomEdit()">保存する</button>
+				</div>
+				<div class="result" id="room-edit-result"></div>
+			</div>
+		</section>
+
+		<!-- 宿泊者一覧: 現在チェックイン中の部屋と宿泊者情報 -->
+		<section class="panel" id="panel-occupancy">
+			<h2>宿泊者一覧</h2>
+			<p class="panel-hint">現在チェックイン中の部屋と、宿泊者の名前・連絡先を確認できます。</p>
+			<button class="action secondary" onclick="loadOccupancy()">最新の状態に更新する</button>
+			<div class="result" id="occupancy-result"></div>
+			<table class="occupancy-table hidden" id="occupancy-table">
+				<thead>
+					<tr>
+						<th>部屋番号</th>
+						<th>部屋種別</th>
+						<th>予約番号</th>
+						<th>名前</th>
+						<th>連絡先</th>
+						<th>人数</th>
+					</tr>
+				</thead>
+				<tbody id="occupancy-tbody"></tbody>
+			</table>
+		</section>
+	</div>
+</main>
+
+<footer class="site-footer">
+	<p>HRS 管理者用ページ（チェックイン／チェックアウト／部屋情報登録）</p>
+	<p><a href="/" style="color: inherit;">顧客向けページへ戻る</a></p>
+</footer>
+
+<script>
+	var adminPassword = null;
+
+	function login() {
+		var password = document.getElementById('login-password').value;
+		// パスワードの正当性はAPI呼び出し時にサーバー側で検証する。ここでは入力の保持のみ行う。
+		if (!password) {
+			showResult('login-result', 'パスワードを入力してください', true);
+			return;
+		}
+		adminPassword = password;
+		document.getElementById('panel-login').classList.remove('active');
+		document.getElementById('admin-content').classList.remove('hidden');
+	}
+
+	function showPanel(panelName) {
+		document.querySelectorAll('nav.tabs button').forEach(function (b) { b.classList.remove('active'); });
+		document.querySelectorAll('#admin-content section.panel').forEach(function (p) { p.classList.remove('active'); });
+		document.getElementById('panel-' + panelName).classList.add('active');
+		var tabButton = document.querySelector('nav.tabs button[data-tab="' + panelName + '"]');
+		if (tabButton) {
+			tabButton.classList.add('active');
+		}
+	}
+
+	document.querySelectorAll('nav.tabs button').forEach(function (btn) {
+		btn.addEventListener('click', function () {
+			showPanel(btn.dataset.tab);
+			if (btn.dataset.tab === 'occupancy') {
+				loadOccupancy();
+			}
+			if (btn.dataset.tab === 'rooms') {
+				loadRooms();
+			}
+		});
+	});
+
+	function showResult(elementId, message, isError) {
+		var el = document.getElementById(elementId);
+		el.textContent = message;
+		el.className = 'result ' + (isError ? 'error' : 'success');
+	}
+
+	function checkIn() {
+		var number = document.getElementById('checkin-number').value;
+		var body = new URLSearchParams({ reservationNumber: number });
+		fetch('/api/checkins', { method: 'POST', body: body })
+			.then(function (res) { return res.json().then(function (b) { return { ok: res.ok, body: b }; }); })
+			.then(function (result) {
+				if (!result.ok) {
+					showResult('checkin-result', '警告: ' + result.body.error, true);
+					return;
+				}
+				var roomLabel = result.body.roomNumber + (result.body.nickname ? '（' + result.body.nickname + '）' : '');
+				showResult('checkin-result', 'チェックインが完了しました。部屋番号: ' + roomLabel, false);
+			})
+			.catch(function (err) { showResult('checkin-result', '通信エラー: ' + err, true); });
+	}
+
+	var checkoutRoomNumber = null;
+
+	function calculateFee() {
+		checkoutRoomNumber = document.getElementById('checkout-roomnumber').value;
+		document.getElementById('checkout-payment').classList.add('hidden');
+		document.getElementById('checkout-result').className = 'result';
+
+		fetch('/api/checkouts/fee?roomNumber=' + encodeURIComponent(checkoutRoomNumber))
+			.then(function (res) { return res.json().then(function (b) { return { ok: res.ok, body: b }; }); })
+			.then(function (result) {
+				if (!result.ok) {
+					showResult('checkout-fee-result', '警告: ' + result.body.error, true);
+					return;
+				}
+				var roomLabel = checkoutRoomNumber + (result.body.nickname ? '（' + result.body.nickname + '）' : '');
+				showResult('checkout-fee-result', roomLabel + ' の宿泊料: ' + result.body.stayFee + '円', false);
+				document.getElementById('checkout-payment').classList.remove('hidden');
+			})
+			.catch(function (err) { showResult('checkout-fee-result', '通信エラー: ' + err, true); });
+	}
+
+	function checkOut() {
+		var method = document.getElementById('checkout-method').value;
+		var body = new URLSearchParams({ roomNumber: checkoutRoomNumber, method: method });
+		fetch('/api/checkouts', { method: 'POST', body: body })
+			.then(function (res) { return res.json().then(function (b) { return { ok: res.ok, body: b }; }); })
+			.then(function (result) {
+				if (!result.ok) {
+					showResult('checkout-result', '警告: ' + result.body.error, true);
+					return;
+				}
+				showResult('checkout-result', 'チェックアウトが完了しました', false);
+			})
+			.catch(function (err) { showResult('checkout-result', '通信エラー: ' + err, true); });
+	}
+
+	function registerRoom() {
+		var body = new URLSearchParams({
+			roomNumber: document.getElementById('register-roomnumber').value,
+			typeName: document.getElementById('register-typename').value,
+			nickname: document.getElementById('register-nickname').value,
+			price: document.getElementById('register-price').value,
+			smoking: document.getElementById('register-smoking').value,
+			password: adminPassword
+		});
+		fetch('/api/rooms', { method: 'POST', body: body })
+			.then(function (res) { return res.json().then(function (b) { return { ok: res.ok, body: b }; }); })
+			.then(function (result) {
+				if (!result.ok) {
+					showResult('register-result', '警告: ' + result.body.error, true);
+					return;
+				}
+				showResult('register-result', '部屋情報の登録が完了しました', false);
+			})
+			.catch(function (err) { showResult('register-result', '通信エラー: ' + err, true); });
+	}
+
+	var editingRoomNumber = null;
+
+	function loadRooms() {
+		document.getElementById('rooms-result').className = 'result';
+		fetch('/api/rooms/list')
+			.then(function (res) { return res.json().then(function (b) { return { ok: res.ok, body: b }; }); })
+			.then(function (result) {
+				if (!result.ok) {
+					showResult('rooms-result', '警告: ' + result.body.error, true);
+					return;
+				}
+				renderRooms(result.body);
+			})
+			.catch(function (err) { showResult('rooms-result', '通信エラー: ' + err, true); });
+	}
+
+	function renderRooms(rooms) {
+		var table = document.getElementById('rooms-table');
+		var tbody = document.getElementById('rooms-tbody');
+		tbody.innerHTML = '';
+
+		if (rooms.length === 0) {
+			table.classList.add('hidden');
+			showResult('rooms-result', '登録されている部屋はありません', false);
+			return;
+		}
+
+		rooms.forEach(function (room) {
+			var tr = document.createElement('tr');
+			tr.innerHTML =
+				'<td>' + room.roomNumber + '</td>' +
+				'<td>' + room.typeName + '</td>' +
+				'<td>' + room.price.toLocaleString() + '円</td>' +
+				'<td>' + room.smokingLabel + '</td>' +
+				'<td>' + (room.nickname || '-') + '</td>' +
+				'<td>' + (room.occupied ? '使用中' : '空室') + '</td>' +
+				'<td></td>';
+			var editButton = document.createElement('button');
+			editButton.className = 'action secondary';
+			editButton.textContent = '編集する';
+			editButton.onclick = function () { startEditRoom(room); };
+			tr.lastElementChild.appendChild(editButton);
+			tbody.appendChild(tr);
+		});
+
+		document.getElementById('rooms-result').className = 'result';
+		table.classList.remove('hidden');
+	}
+
+	function startEditRoom(room) {
+		editingRoomNumber = room.roomNumber;
+		document.getElementById('room-edit-title').textContent = room.roomNumber + ' を編集';
+		document.getElementById('edit-typename').value = room.typeName;
+		document.getElementById('edit-nickname').value = room.nickname || '';
+		document.getElementById('edit-price').value = room.price;
+		document.getElementById('edit-smoking').value = room.smokingLabel === '喫煙' ? '1' : '2';
+		document.getElementById('room-edit-result').className = 'result';
+		document.getElementById('room-edit-form').classList.remove('hidden');
+	}
+
+	function cancelEditRoom() {
+		editingRoomNumber = null;
+		document.getElementById('room-edit-form').classList.add('hidden');
+	}
+
+	function saveRoomEdit() {
+		var body = new URLSearchParams({
+			roomNumber: editingRoomNumber,
+			typeName: document.getElementById('edit-typename').value,
+			nickname: document.getElementById('edit-nickname').value,
+			price: document.getElementById('edit-price').value,
+			smoking: document.getElementById('edit-smoking').value,
+			password: adminPassword
+		});
+		fetch('/api/rooms/edit', { method: 'POST', body: body })
+			.then(function (res) { return res.json().then(function (b) { return { ok: res.ok, body: b }; }); })
+			.then(function (result) {
+				if (!result.ok) {
+					showResult('room-edit-result', '警告: ' + result.body.error, true);
+					return;
+				}
+				showResult('room-edit-result', '部屋情報を更新しました', false);
+				document.getElementById('room-edit-form').classList.add('hidden');
+				loadRooms();
+			})
+			.catch(function (err) { showResult('room-edit-result', '通信エラー: ' + err, true); });
+	}
+
+	function loadOccupancy() {
+		document.getElementById('occupancy-result').className = 'result';
+		fetch('/api/occupancy')
+			.then(function (res) { return res.json().then(function (b) { return { ok: res.ok, body: b }; }); })
+			.then(function (result) {
+				if (!result.ok) {
+					showResult('occupancy-result', '警告: ' + result.body.error, true);
+					return;
+				}
+				renderOccupancy(result.body);
+			})
+			.catch(function (err) { showResult('occupancy-result', '通信エラー: ' + err, true); });
+	}
+
+	function renderOccupancy(rooms) {
+		var table = document.getElementById('occupancy-table');
+		var tbody = document.getElementById('occupancy-tbody');
+		tbody.innerHTML = '';
+
+		if (rooms.length === 0) {
+			table.classList.add('hidden');
+			showResult('occupancy-result', '現在チェックイン中の部屋はありません', false);
+			return;
+		}
+
+		rooms.forEach(function (room) {
+			var tr = document.createElement('tr');
+			var roomLabel = room.roomNumber + (room.nickname ? '（' + room.nickname + '）' : '');
+			tr.innerHTML =
+				'<td>' + roomLabel + '</td>' +
+				'<td>' + room.typeName + '・' + room.smokingLabel + '</td>' +
+				'<td>' + (room.reservationNumber || '-') + '</td>' +
+				'<td>' + (room.guestName || '-') + '</td>' +
+				'<td>' + (room.guestContact || '-') + '</td>' +
+				'<td>' + (room.headCount != null ? room.headCount + '人' : '-') + '</td>';
+			tbody.appendChild(tr);
+		});
+
+		document.getElementById('occupancy-result').className = 'result';
+		table.classList.remove('hidden');
+	}
+</script>
+
+</body>
+</html>

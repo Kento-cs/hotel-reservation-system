@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ホテル予約システム (HRS)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+	:root {
+		--color-bg: #faf6ee;
+		--color-panel: #fffdf9;
+		--color-border: #e4d9c3;
+		--color-primary: #8c3a2b;
+		--color-primary-dark: #6e2b1f;
+		--color-accent: #3f5b45;
+		--color-text: #2b2620;
+		--color-muted: #83786a;
+		--color-success-bg: #edf3ea;
+		--color-success-text: #3f5b45;
+		--color-error-bg: #fbebe8;
+		--color-error-text: #8c3a2b;
+		--font-mincho: "Shippori Mincho", "Yu Mincho", "Hiragino Mincho ProN", serif;
+		--font-sans: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
+	}
+	* {
+		box-sizing: border-box;
+	}
+	body {
+		margin: 0;
+		font-family: var(--font-sans);
+		background: var(--color-bg);
+		color: var(--color-text);
+	}
+	h1, h2, h3 {
+		font-family: var(--font-mincho);
+	}
+	/* ヘッダー / ヒーロー */
+	header.site-header {
+		background: linear-gradient(135deg, #4a2620 0%, #6e2b1f 55%, #8c3a2b 100%);
+		color: #f6ede1;
+		padding: 48px 24px 40px;
+		text-align: center;
+		position: relative;
+		overflow: hidden;
+	}
+	header.site-header::before {
+		content: "";
+		position: absolute;
+		inset: 0;
+		background-image:
+			repeating-linear-gradient(45deg, rgba(255,255,255,0.035) 0 2px, transparent 2px 26px);
+		pointer-events: none;
+	}
+	.brand-eyebrow {
+		margin: 0 0 10px;
+		letter-spacing: 0.28em;
+		font-size: 11px;
+		color: #e3c9a8;
+		text-transform: uppercase;
+	}
+	header.site-header h1 {
+		margin: 0;
+		font-size: 34px;
+		font-weight: 700;
+		letter-spacing: 0.06em;
+	}
+	.brand-rule {
+		width: 64px;
+		height: 2px;
+		margin: 16px auto;
+		background: #d9b98c;
+		border: none;
+	}
+	.brand-tagline {
+		margin: 0;
+		font-family: var(--font-mincho);
+		font-size: 14px;
+		color: #ecdcc4;
+		letter-spacing: 0.08em;
+	}
+	main {
+		max-width: 860px;
+		margin: -28px auto 0;
+		padding: 0 16px 56px;
+		position: relative;
+	}
+	nav.tabs {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 4px;
+		margin-bottom: 20px;
+		background: var(--color-panel);
+		border: 1px solid var(--color-border);
+		border-radius: 12px;
+		padding: 6px;
+		box-shadow: 0 8px 24px rgba(60, 40, 20, 0.08);
+	}
+	nav.tabs button {
+		flex: 1 1 auto;
+		padding: 12px 10px;
+		border: none;
+		background: transparent;
+		color: var(--color-muted);
+		border-radius: 8px;
+		cursor: pointer;
+		font-size: 13px;
+		font-family: var(--font-sans);
+		font-weight: 500;
+		transition: background 0.15s ease, color 0.15s ease;
+	}
+	nav.tabs button:hover {
+		background: rgba(140, 58, 43, 0.08);
+	}
+	nav.tabs button.active {
+		background: var(--color-primary);
+		color: #fff9f0;
+	}
+	section.panel {
+		display: none;
+		background: var(--color-panel);
+		border: 1px solid var(--color-border);
+		border-radius: 12px;
+		padding: 28px;
+		box-shadow: 0 8px 24px rgba(60, 40, 20, 0.06);
+	}
+	section.panel.active {
+		display: block;
+	}
+	section.panel h2 {
+		margin: 0 0 4px;
+		font-size: 19px;
+		color: var(--color-primary-dark);
+	}
+	section.panel h2::after {
+		content: "";
+		display: block;
+		width: 36px;
+		height: 2px;
+		background: var(--color-primary);
+		margin: 10px 0 20px;
+	}
+	label {
+		display: block;
+		font-size: 13px;
+		color: var(--color-muted);
+		margin: 14px 0 5px;
+	}
+	input, select {
+		width: 100%;
+		padding: 9px 11px;
+		border: 1px solid var(--color-border);
+		border-radius: 6px;
+		font-size: 14px;
+		font-family: var(--font-sans);
+		background: #fff;
+		color: var(--color-text);
+	}
+	input:focus, select:focus {
+		outline: none;
+		border-color: var(--color-primary);
+	}
+	.row {
+		display: flex;
+		gap: 12px;
+	}
+	.row > div {
+		flex: 1;
+	}
+	button.action {
+		margin-top: 20px;
+		padding: 11px 22px;
+		border: none;
+		border-radius: 6px;
+		background: var(--color-primary);
+		color: #fff9f0;
+		font-size: 14px;
+		font-family: var(--font-sans);
+		font-weight: 500;
+		cursor: pointer;
+		letter-spacing: 0.03em;
+	}
+	button.action:hover {
+		background: var(--color-primary-dark);
+	}
+	button.action.secondary {
+		background: transparent;
+		color: var(--color-primary-dark);
+		border: 1px solid var(--color-border);
+	}
+	button.action.secondary:hover {
+		background: rgba(140, 58, 43, 0.06);
+	}
+	.row > button {
+		flex: 1;
+	}
+	.confirm-list {
+		margin: 18px 0 4px;
+	}
+	.confirm-row {
+		display: flex;
+		justify-content: space-between;
+		gap: 12px;
+		padding: 10px 0;
+		border-bottom: 1px solid var(--color-border);
+		font-size: 14px;
+	}
+	.confirm-row span {
+		color: var(--color-muted);
+	}
+	.panel-hint {
+		margin: 16px 0 0;
+		font-size: 12.5px;
+		color: var(--color-muted);
+	}
+	.confirm-row strong {
+		color: var(--color-text);
+		font-weight: 600;
+	}
+	.result {
+		margin-top: 18px;
+		padding: 13px 15px;
+		border-radius: 8px;
+		font-size: 14px;
+		white-space: pre-line;
+		display: none;
+	}
+	.result.success {
+		display: block;
+		background: var(--color-success-bg);
+		color: var(--color-success-text);
+	}
+	.result.error {
+		display: block;
+		background: var(--color-error-bg);
+		color: var(--color-error-text);
+	}
+	/* 部屋一覧: カード表示 */
+	.room-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+		gap: 18px;
+		margin-top: 20px;
+	}
+	.room-grid.hidden {
+		display: none;
+	}
+	.room-card {
+		border: 1px solid var(--color-border);
+		border-radius: 10px;
+		overflow: hidden;
+		background: #fff;
+		display: flex;
+		flex-direction: column;
+	}
+	.room-photo {
+		height: 108px;
+		position: relative;
+		display: flex;
+		align-items: flex-end;
+		justify-content: flex-end;
+		padding: 8px 14px;
+	}
+	.room-photo::after {
+		font-family: var(--font-mincho);
+		font-size: 46px;
+		color: rgba(255, 255, 255, 0.4);
+		line-height: 1;
+	}
+	.room-photo-0 { background: linear-gradient(135deg, #a8542b, #6e2b1f); }
+	.room-photo-0::after { content: "松"; }
+	.room-photo-1 { background: linear-gradient(135deg, #4f6a52, #2c3f2e); }
+	.room-photo-1::after { content: "竹"; }
+	.room-photo-2 { background: linear-gradient(135deg, #8c3a2b, #4a2620); }
+	.room-photo-2::after { content: "梅"; }
+	.room-card-body {
+		padding: 16px;
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+		flex: 1;
+	}
+	.room-card-body h3 {
+		margin: 0;
+		font-size: 17px;
+		color: var(--color-text);
+	}
+	.room-card-badges {
+		display: flex;
+		gap: 6px;
+		flex-wrap: wrap;
+	}
+	.badge {
+		font-size: 11px;
+		padding: 3px 9px;
+		border-radius: 999px;
+		border: 1px solid var(--color-border);
+		color: var(--color-muted);
+		background: #faf6ee;
+	}
+	.room-card-price {
+		margin-top: 4px;
+		font-size: 20px;
+		font-weight: 700;
+		color: var(--color-primary-dark);
+	}
+	.room-card-price span {
+		font-size: 12px;
+		font-weight: 400;
+		color: var(--color-muted);
+		margin-left: 2px;
+	}
+	.room-card-avail {
+		font-size: 12px;
+		color: var(--color-muted);
+	}
+	.room-card button.action {
+		margin-top: auto;
+		width: 100%;
+	}
+	.hidden {
+		display: none;
+	}
+	/* 空室カレンダー */
+	.calendar-toggle {
+		margin: 6px 0 0;
+		background: none;
+		border: none;
+		padding: 0;
+		color: var(--color-primary-dark);
+		font-size: 12.5px;
+		text-decoration: underline;
+		cursor: pointer;
+		font-family: var(--font-sans);
+	}
+	#availability-calendar {
+		margin-top: 14px;
+		padding-top: 14px;
+		border-top: 1px solid var(--color-border);
+	}
+	.calendar-nav {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin: 4px 0 10px;
+	}
+	.calendar-nav button {
+		margin-top: 0;
+		padding: 6px 12px;
+		font-size: 12.5px;
+	}
+	.calendar-month-label {
+		font-size: 14px;
+		font-weight: 600;
+		color: var(--color-text);
+	}
+	.calendar-grid {
+		display: grid;
+		grid-template-columns: repeat(7, 1fr);
+		gap: 4px;
+	}
+	.calendar-weekday {
+		text-align: center;
+		font-size: 11px;
+		color: var(--color-muted);
+		padding: 4px 0;
+	}
+	.calendar-cell {
+		border: 1px solid var(--color-border);
+		border-radius: 6px;
+		padding: 6px 2px;
+		text-align: center;
+		font-size: 11px;
+		cursor: pointer;
+		background: #fff;
+	}
+	.calendar-cell.empty {
+		border-color: transparent;
+		cursor: default;
+	}
+	.calendar-day {
+		font-size: 13px;
+		font-weight: 600;
+	}
+	.calendar-count {
+		margin-top: 2px;
+		color: var(--color-muted);
+	}
+	.calendar-cell.avail-ok {
+		background: var(--color-success-bg);
+	}
+	.calendar-cell.avail-ok .calendar-count {
+		color: var(--color-success-text);
+	}
+	.calendar-cell.avail-low {
+		background: #fbeed2;
+	}
+	.calendar-cell.avail-low .calendar-count {
+		color: #8a6d1f;
+	}
+	.calendar-cell.avail-none {
+		background: var(--color-error-bg);
+		color: var(--color-muted);
+		cursor: not-allowed;
+	}
+	.calendar-cell.avail-none .calendar-count {
+		color: var(--color-muted);
+	}
+	footer.site-footer {
+		background: #34211b;
+		color: #d9c9b4;
+		padding: 32px 24px;
+		text-align: center;
+		font-size: 13px;
+		line-height: 1.9;
+	}
+	footer.site-footer .footer-title {
+		font-family: var(--font-mincho);
+		font-size: 16px;
+		color: #f0e2cc;
+		margin-bottom: 10px;
+		letter-spacing: 0.06em;
+	}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+	<p class="brand-eyebrow">HOTEL RESERVATION SYSTEM</p>
+	<h1 id="hotel-name">ホテル予約システム</h1>
+	<hr class="brand-rule">
+	<p class="brand-tagline">旅の疲れを、静かなひとときへ。</p>
+</header>
+
+<main>
+	<nav class="tabs">
+		<button data-tab="search" class="active">部屋を検索・予約する</button>
+		<button data-tab="confirm">予約を確認する</button>
+	</nav>
+
+	<!-- UC1 + UC2 -->
+	<section class="panel active" id="panel-search">
+		<h2>部屋を検索する</h2>
+		<label>宿泊日</label>
+		<input type="date" id="search-date">
+		<button type="button" class="calendar-toggle" id="calendar-toggle-button" onclick="toggleCalendar()">空室カレンダーで見る</button>
+		<div class="hidden" id="availability-calendar">
+			<label>部屋種別</label>
+			<select id="calendar-typeselect" onchange="loadCalendar()"></select>
+			<div class="calendar-nav">
+				<button type="button" class="action secondary" onclick="changeCalendarMonth(-1)">&lt; 前月</button>
+				<span class="calendar-month-label" id="calendar-month-label"></span>
+				<button type="button" class="action secondary" onclick="changeCalendarMonth(1)">次月 &gt;</button>
+			</div>
+			<div class="calendar-grid" id="calendar-grid"></div>
+		</div>
+		<div class="row">
+			<div>
+				<label>人数</label>
+				<input type="number" id="search-headcount" value="1" min="1">
+			</div>
+			<div>
+				<label>喫煙区分</label>
+				<select id="search-smoking">
+					<option value="">指定しない</option>
+					<option value="1">喫煙</option>
+					<option value="2">禁煙</option>
+				</select>
+			</div>
+		</div>
+		<div class="row">
+			<div>
+				<label>値段の下限</label>
+				<select id="search-minprice">
+					<option value="">指定なし</option>
+					<option value="0">0円</option>
+					<option value="5000">5,000円</option>
+					<option value="10000">10,000円</option>
+					<option value="20000">20,000円</option>
+					<option value="50000">50,000円</option>
+				</select>
+			</div>
+			<div>
+				<label>値段の上限</label>
+				<select id="search-maxprice">
+					<option value="">指定なし</option>
+					<option value="5000">5,000円</option>
+					<option value="10000">10,000円</option>
+					<option value="20000">20,000円</option>
+					<option value="50000">50,000円</option>
+					<option value="100000">100,000円</option>
+				</select>
+			</div>
+		</div>
+		<button class="action" onclick="searchRoomTypes()">検索する</button>
+		<div class="result" id="search-result"></div>
+		<div class="room-grid hidden" id="search-table"></div>
+	</section>
+
+	<!-- UC2: 予約画面（検索結果から遷移する独立した画面） -->
+	<section class="panel" id="panel-reserve-form">
+		<h2>予約する</h2>
+		<p id="reserve-selected-type"></p>
+		<label>名前</label>
+		<input type="text" id="reserve-name">
+		<label>連絡先</label>
+		<input type="text" id="reserve-contact">
+		<div class="row">
+			<button class="action secondary" onclick="showPanel('search')">検索結果に戻る</button>
+			<button class="action" onclick="reviewReservation()">内容を確認する</button>
+		</div>
+		<div class="result" id="reserve-validate-result"></div>
+	</section>
+
+	<!-- UC2: 予約内容確認画面（設計書のステップ4に対応、独立した画面） -->
+	<section class="panel" id="panel-reserve-confirm">
+		<h2>予約内容の確認</h2>
+		<div class="confirm-list">
+			<div class="confirm-row"><span>部屋種別</span><strong id="confirm-type"></strong></div>
+			<div class="confirm-row"><span>宿泊日</span><strong id="confirm-date"></strong></div>
+			<div class="confirm-row"><span>人数</span><strong id="confirm-headcount"></strong></div>
+			<div class="confirm-row"><span>料金</span><strong id="confirm-price"></strong></div>
+			<div class="confirm-row"><span>名前</span><strong id="confirm-name"></strong></div>
+			<div class="confirm-row"><span>連絡先</span><strong id="confirm-contact"></strong></div>
+		</div>
+		<div class="row">
+			<button class="action secondary" onclick="showPanel('reserve-form')">内容を修正する</button>
+			<button class="action" onclick="submitReservation()">確定する</button>
+		</div>
+		<div class="result" id="reserve-result"></div>
+	</section>
+
+	<!-- UC2: 予約完了画面（設計書のステップ7に対応、独立した画面） -->
+	<section class="panel" id="panel-reserve-complete">
+		<h2>予約が完了しました</h2>
+		<div class="confirm-list">
+			<div class="confirm-row"><span>予約番号</span><strong id="complete-reservation-number"></strong></div>
+		</div>
+		<p class="panel-hint">この予約番号は、予約の確認・チェックイン・キャンセルの際に使用します。大切に控えてください。</p>
+		<button class="action" onclick="showPanel('search')">検索画面に戻る</button>
+	</section>
+
+	<!-- UC3 -->
+	<section class="panel" id="panel-confirm">
+		<h2>予約を確認する</h2>
+		<label>予約番号</label>
+		<input type="text" id="confirm-number">
+		<button class="action" onclick="confirmReservation()">照会する</button>
+		<div class="result" id="confirm-result"></div>
+		<button class="action hidden" id="confirm-cancel-button" onclick="cancelReservation()">この予約をキャンセルする</button>
+		<div class="result" id="cancel-result"></div>
+	</section>
+
+</main>
+
+<footer class="site-footer">
+	<p class="footer-title" id="footer-hotel-name">ホテル予約システム</p>
+	<p>
+		チェックイン 15:00 〜 ／ チェックアウト 〜 10:00<br>
+		ご予約・お問い合わせ: 03-0000-0000（受付 9:00〜18:00）
+	</p>
+	<p><a href="/admin" style="color: inherit;">スタッフ用ページ（チェックイン／チェックアウト／部屋情報登録）</a></p>
+</footer>
+
+<script>
+	fetch('/api/hotel')
+		.then(function (res) { return res.json(); })
+		.then(function (body) {
+			if (body.name) {
+				document.getElementById('hotel-name').textContent = body.name;
+				document.getElementById('footer-hotel-name').textContent = body.name;
+				document.title = body.name + '（ホテル予約システム）';
+			}
+		})
+		.catch(function () { /* ホテル名の取得に失敗しても既定の表示のままにする */ });
+
+	window.onload = function() {
+		var today = new Date();
+		var yyyy = today.getFullYear();
+		var mm = String(today.getMonth() + 1).padStart(2, '0');
+		var dd = String(today.getDate()).padStart(2, '0');
+		var formattedToday = yyyy + '-' + mm + '-' + dd;
+		document.getElementById('search-date').setAttribute('min', formattedToday);
+	};
+
+	function showPanel(panelName) {
+		document.querySelectorAll('nav.tabs button').forEach(function (b) { b.classList.remove('active'); });
+		document.querySelectorAll('section.panel').forEach(function (p) { p.classList.remove('active'); });
+		document.getElementById('panel-' + panelName).classList.add('active');
+		var tabButton = document.querySelector('nav.tabs button[data-tab="' + panelName + '"]');
+		if (tabButton) {
+			tabButton.classList.add('active');
+		}
+	}
+
+	document.querySelectorAll('nav.tabs button').forEach(function (btn) {
+		btn.addEventListener('click', function () {
+			showPanel(btn.dataset.tab);
+		});
+	});
+
+	function showResult(elementId, message, isError) {
+		var el = document.getElementById(elementId);
+		el.textContent = message;
+		el.className = 'result ' + (isError ? 'error' : 'success');
+	}
+
+	function toDateInput(value) {
+		// <input type="date"> gives yyyy-mm-dd, backend expects yyyy/mm/dd
+		return value.replace(/-/g, '/');
+	}
+
+	// 空室カレンダー
+	var calendarYear = null;
+	var calendarMonth = null; // 0-11
+	var calendarLoaded = false;
+
+	function toggleCalendar() {
+		var el = document.getElementById('availability-calendar');
+		el.classList.toggle('hidden');
+		if (!el.classList.contains('hidden') && !calendarLoaded) {
+			calendarLoaded = true;
+			loadCalendarRoomTypes();
+		}
+	}
+
+	function loadCalendarRoomTypes() {
+		var today = new Date();
+		var todayStr = today.getFullYear() + '/' + String(today.getMonth() + 1).padStart(2, '0') + '/' + String(today.getDate()).padStart(2, '0');
+
+		fetch('/api/room-types/search?' + new URLSearchParams({ date: todayStr, headCount: 1 }))
+			.then(function (res) { return res.json(); })
+			.then(function (roomTypes) {
+				var select = document.getElementById('calendar-typeselect');
+				select.innerHTML = '';
+				roomTypes.forEach(function (rt) {
+					var opt = document.createElement('option');
+					opt.value = rt.id;
+					opt.textContent = rt.typeName + '（' + rt.smokingLabel + '）';
+					select.appendChild(opt);
+				});
+				calendarYear = today.getFullYear();
+				calendarMonth = today.getMonth();
+				loadCalendar();
+			})
+			.catch(function () { /* 部屋種別の取得に失敗した場合はカレンダーを表示しない */ });
+	}
+
+	function changeCalendarMonth(diff) {
+		calendarMonth += diff;
+		if (calendarMonth < 0) {
+			calendarMonth = 11;
+			calendarYear--;
+		}
+		else if (calendarMonth > 11) {
+			calendarMonth = 0;
+			calendarYear++;
+		}
+		loadCalendar();
+	}
+
+	function loadCalendar() {
+		var roomTypeId = document.getElementById('calendar-typeselect').value;
+		if (!roomTypeId) {
+			return;
+		}
+		var monthStr = calendarYear + '/' + String(calendarMonth + 1).padStart(2, '0');
+		document.getElementById('calendar-month-label').textContent = calendarYear + '年' + (calendarMonth + 1) + '月';
+
+		fetch('/api/availability?' + new URLSearchParams({ roomTypeId: roomTypeId, month: monthStr }))
+			.then(function (res) { return res.json(); })
+			.then(function (days) { renderCalendar(days); })
+			.catch(function () { /* 空室カレンダーの取得に失敗した場合は何もしない */ });
+	}
+
+	function renderCalendar(days) {
+		var grid = document.getElementById('calendar-grid');
+		grid.innerHTML = '';
+
+		['日', '月', '火', '水', '木', '金', '土'].forEach(function (w) {
+			var wd = document.createElement('div');
+			wd.className = 'calendar-weekday';
+			wd.textContent = w;
+			grid.appendChild(wd);
+		});
+
+		var offset = new Date(calendarYear, calendarMonth, 1).getDay();
+		for (var i = 0; i < offset; i++) {
+			var empty = document.createElement('div');
+			empty.className = 'calendar-cell empty';
+			grid.appendChild(empty);
+		}
+
+		days.forEach(function (d) {
+			var cell = document.createElement('div');
+			var cls = 'avail-none';
+			if (d.availableCount > 0) {
+				var ratio = d.totalCount > 0 ? d.availableCount / d.totalCount : 0;
+				cls = ratio < 0.3 ? 'avail-low' : 'avail-ok';
+			}
+			cell.className = 'calendar-cell ' + cls;
+			var dayNum = parseInt(d.date.split('/')[2], 10);
+			cell.innerHTML = '<div class="calendar-day">' + dayNum + '</div><div class="calendar-count">' + d.availableCount + '室</div>';
+			cell.onclick = function () {
+				document.getElementById('search-date').value = d.date.replace(/\//g, '-');
+				searchRoomTypes();
+			};
+			grid.appendChild(cell);
+		});
+	}
+
+	var selectedRoomTypeId = null;
+	var selectedRoomType = null;
+	var selectedDate = null;
+	var selectedHeadCount = 1;
+
+	function searchRoomTypes() {
+		document.getElementById('search-table').classList.add('hidden');
+
+		var date = document.getElementById('search-date').value;
+		if (!date) {
+			showResult('search-result', '宿泊日を入力してください', true);
+			return;
+		}
+		selectedDate = toDateInput(date);
+		selectedHeadCount = document.getElementById('search-headcount').value || '1';
+
+		var params = new URLSearchParams({
+			date: selectedDate,
+			headCount: selectedHeadCount,
+			minPrice: document.getElementById('search-minprice').value,
+			maxPrice: document.getElementById('search-maxprice').value,
+			smoking: document.getElementById('search-smoking').value
+		});
+
+		fetch('/api/room-types/search?' + params.toString())
+			.then(function (res) { return res.json().then(function (body) { return { ok: res.ok, body: body }; }); })
+			.then(function (result) {
+				if (!result.ok) {
+					showResult('search-result', '警告: ' + result.body.error, true);
+					return;
+				}
+				document.getElementById('search-result').className = 'result';
+				renderRoomTypes(result.body);
+			})
+			.catch(function (err) { showResult('search-result', '通信エラー: ' + err, true); });
+	}
+
+	// 松・竹・梅は部屋種別名に固定で紐付ける（スイート＝松、スタンダード＝竹）
+	var PHOTO_CLASS_BY_TYPE_NAME = { 'スイート': 'room-photo-0', 'スタンダード': 'room-photo-1' };
+
+	function renderRoomTypes(roomTypes) {
+		var grid = document.getElementById('search-table');
+		grid.innerHTML = '';
+
+		roomTypes.forEach(function (rt) {
+			var card = document.createElement('div');
+			card.className = 'room-card';
+
+			var photo = document.createElement('div');
+			photo.className = 'room-photo ' + (PHOTO_CLASS_BY_TYPE_NAME[rt.typeName] || 'room-photo-2');
+			card.appendChild(photo);
+
+			var body = document.createElement('div');
+			body.className = 'room-card-body';
+			body.innerHTML =
+				'<h3>' + rt.typeName + '</h3>' +
+				'<div class="room-card-badges">' +
+					'<span class="badge">' + rt.smokingLabel + '</span>' +
+					'<span class="badge">' + rt.capacity + '人用</span>' +
+				'</div>' +
+				'<div class="room-card-price">' + rt.price.toLocaleString() + '円<span>/泊</span></div>' +
+				'<div class="room-card-avail">空室 ' + rt.availableCount + '室</div>';
+
+			var button = document.createElement('button');
+			button.className = 'action';
+			button.textContent = 'この部屋種別を予約する';
+			button.onclick = function () { selectRoomType(rt); };
+			body.appendChild(button);
+
+			card.appendChild(body);
+			grid.appendChild(card);
+		});
+		document.getElementById('search-table').classList.remove('hidden');
+	}
+
+	function selectRoomType(rt) {
+		selectedRoomTypeId = rt.id;
+		selectedRoomType = rt;
+		document.getElementById('reserve-selected-type').textContent =
+			'選択中: ' + rt.typeName + ' / ' + rt.price + '円 / ' + rt.smokingLabel;
+		document.getElementById('reserve-name').value = '';
+		document.getElementById('reserve-contact').value = '';
+		document.getElementById('reserve-validate-result').className = 'result';
+		showPanel('reserve-form');
+	}
+
+	function reviewReservation() {
+		var name = document.getElementById('reserve-name').value;
+		var contact = document.getElementById('reserve-contact').value;
+		if (!name) {
+			showResult('reserve-validate-result', '名前を入力してください', true);
+			return;
+		}
+
+		document.getElementById('confirm-type').textContent = selectedRoomType.typeName;
+		document.getElementById('confirm-date').textContent = selectedDate;
+		document.getElementById('confirm-headcount').textContent = selectedHeadCount + '人';
+		document.getElementById('confirm-price').textContent = selectedRoomType.price + '円';
+		document.getElementById('confirm-name').textContent = name;
+		document.getElementById('confirm-contact').textContent = contact || '（未入力）';
+
+		document.getElementById('reserve-result').className = 'result';
+		showPanel('reserve-confirm');
+	}
+
+	function submitReservation() {
+		var name = document.getElementById('reserve-name').value;
+		var contact = document.getElementById('reserve-contact').value;
+
+		var body = new URLSearchParams({
+			roomTypeId: selectedRoomTypeId,
+			name: name,
+			contact: contact,
+			date: selectedDate,
+			headCount: selectedHeadCount
+		});
+
+		fetch('/api/reservations', { method: 'POST', body: body })
+			.then(function (res) { return res.json().then(function (b) { return { ok: res.ok, body: b }; }); })
+			.then(function (result) {
+				if (!result.ok) {
+					showResult('reserve-result', '警告: ' + result.body.error, true);
+					return;
+				}
+				document.getElementById('complete-reservation-number').textContent = result.body.reservationNumber;
+				showPanel('reserve-complete');
+			})
+			.catch(function (err) { showResult('reserve-result', '通信エラー: ' + err, true); });
+	}
+
+	var confirmedReservationNumber = null;
+
+	function confirmReservation() {
+		var number = document.getElementById('confirm-number').value;
+		document.getElementById('confirm-cancel-button').classList.add('hidden');
+		document.getElementById('cancel-result').className = 'result';
+
+		fetch('/api/reservations?number=' + encodeURIComponent(number))
+			.then(function (res) { return res.json().then(function (b) { return { ok: res.ok, body: b }; }); })
+			.then(function (result) {
+				if (!result.ok) {
+					showResult('confirm-result', '警告: ' + result.body.error, true);
+					return;
+				}
+				var r = result.body;
+				showResult('confirm-result',
+					'予約番号: ' + r.reservationNumber + '\n' +
+					'部屋種別: ' + r.typeName + '\n' +
+					'宿泊日: ' + r.date + '\n' +
+					'人数: ' + r.headCount + '人\n' +
+					'状態: ' + r.status + '\n' +
+					'宿泊料: ' + r.stayFee + '円', false);
+				if (r.status === 'RESERVED') {
+					confirmedReservationNumber = r.reservationNumber;
+					document.getElementById('confirm-cancel-button').classList.remove('hidden');
+				}
+			})
+			.catch(function (err) { showResult('confirm-result', '通信エラー: ' + err, true); });
+	}
+
+	function cancelReservation() {
+		if (!confirmedReservationNumber) {
+			return;
+		}
+		var body = new URLSearchParams({ reservationNumber: confirmedReservationNumber });
+		fetch('/api/reservations/cancel', { method: 'POST', body: body })
+			.then(function (res) { return res.json().then(function (b) { return { ok: res.ok, body: b }; }); })
+			.then(function (result) {
+				if (!result.ok) {
+					showResult('cancel-result', '警告: ' + result.body.error, true);
+					return;
+				}
+				showResult('cancel-result', '予約をキャンセルしました', false);
+				document.getElementById('confirm-cancel-button').classList.add('hidden');
+			})
+			.catch(function (err) { showResult('cancel-result', '通信エラー: ' + err, true); });
+	}
+
+</script>
+
+</body>
+</html>

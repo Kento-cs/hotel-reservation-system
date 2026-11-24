@@ -1,0 +1,4 @@
+bin/
+db/hrsdb.*
+db/hrsdb
+.env

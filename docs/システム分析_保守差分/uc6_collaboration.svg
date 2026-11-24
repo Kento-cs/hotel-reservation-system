@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 620" width="1180" height="620" font-family="sans-serif">
+<rect width="1180" height="620" fill="#ffffff"/>
+<defs>
+<marker id="arrowhead" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+<polygon points="0 0, 10 4, 0 8" fill="#444"/>
+</marker>
+</defs>
+<text x="590.0" y="34" text-anchor="middle" font-size="19" font-weight="700" fill="#1f2430">UC6：予約をキャンセルする（コラボレーション図・保守で追加）</text>
+<circle cx="90" cy="286" r="10" fill="none" stroke="#1f2430" stroke-width="2"/>
+<line x1="90" y1="296" x2="90" y2="318" stroke="#1f2430" stroke-width="2"/>
+<line x1="76" y1="300" x2="104" y2="300" stroke="#1f2430" stroke-width="2"/>
+<line x1="90" y1="318" x2="77" y2="336" stroke="#1f2430" stroke-width="2"/>
+<line x1="90" y1="318" x2="103" y2="336" stroke="#1f2430" stroke-width="2"/>
+<text x="90" y="354" text-anchor="middle" font-size="13" fill="#1f2430">利用者</text>
+<rect x="240.0" y="195.0" width="200" height="130" rx="6" fill="#ffffff" stroke="#333333" stroke-width="1.5"/>
+<circle cx="336" cy="217.0" r="9" fill="none" stroke="#2f6fed" stroke-width="2"/><line x1="323" y1="208.0" x2="323" y2="226.0" stroke="#2f6fed" stroke-width="2"/><line x1="323" y1="217.0" x2="327" y2="217.0" stroke="#2f6fed" stroke-width="2"/>
+<text x="340" y="237.0" text-anchor="middle" font-size="11" fill="#2f6fed" font-family="sans-serif" font-style="italic">&#171;boundary&#187;</text>
+<text x="340" y="255.0" text-anchor="middle" font-size="13.5" fill="#1f2430" font-family="sans-serif" font-weight="600">予約確認画面</text>
+<rect x="580.0" y="185.0" width="240" height="150" rx="6" fill="#fff6e0" stroke="#c98a1b" stroke-width="2.5" stroke-dasharray="6,3"/>
+<circle cx="700" cy="207.0" r="9" fill="none" stroke="#3f5b45" stroke-width="2"/><path d="M 694 199.0 A 10 10 0 1 1 691 207.0" fill="none" stroke="#3f5b45" stroke-width="2"/><polygon points="694,194.0 699,198.0 691,201.0" fill="#3f5b45"/>
+<text x="700" y="227.0" text-anchor="middle" font-size="11" fill="#3f5b45" font-family="sans-serif" font-style="italic">&#171;control&#187;</text>
+<text x="700" y="245.0" text-anchor="middle" font-size="13.5" fill="#1f2430" font-family="sans-serif" font-weight="600">予約キャンセル管理</text>
+<text x="700" y="325.0" text-anchor="middle" font-size="10.5" fill="#c98a1b" font-family="sans-serif" font-weight="700">［保守で新規追加］</text>
+<rect x="950.0" y="100.0" width="180" height="80" rx="6" fill="#ffffff" stroke="#333333" stroke-width="1.5"/>
+<circle cx="1040" cy="122.0" r="9" fill="none" stroke="#8c3a2b" stroke-width="2"/><line x1="1031" y1="131.0" x2="1049" y2="131.0" stroke="#8c3a2b" stroke-width="2"/>
+<text x="1040" y="142.0" text-anchor="middle" font-size="11" fill="#8c3a2b" font-family="sans-serif" font-style="italic">&#171;entity&#187;</text>
+<text x="1040" y="160.0" text-anchor="middle" font-size="13.5" fill="#1f2430" font-family="sans-serif" font-weight="600">予約</text>
+<line x1="114" y1="225" x2="240.0" y2="225" stroke="#444" stroke-width="1.6" marker-end="url(#arrowhead)"/>
+<text x="177.0" y="219" text-anchor="middle" font-size="12" fill="#1f2430" font-family="sans-serif">1: 予約番号を入力する()</text>
+<line x1="114" y1="305" x2="240.0" y2="305" stroke="#444" stroke-width="1.6" marker-end="url(#arrowhead)"/>
+<text x="177.0" y="320" text-anchor="middle" font-size="12" fill="#1f2430" font-family="sans-serif">4: キャンセルを選択する()</text>
+<line x1="440.0" y1="210" x2="580.0" y2="210" stroke="#444" stroke-width="1.6" marker-end="url(#arrowhead)"/>
+<text x="510.0" y="204" text-anchor="middle" font-size="12" fill="#1f2430" font-family="sans-serif">2: 照会要求()</text>
+<line x1="580.0" y1="250" x2="440.0" y2="250" stroke="#444" stroke-width="1.6" marker-end="url(#arrowhead)" stroke-dasharray="5,4"/>
+<text x="510.0" y="265" text-anchor="middle" font-size="12" fill="#1f2430" font-family="sans-serif">3: 予約内容または該当なしの警告()</text>
+<line x1="440.0" y1="290" x2="580.0" y2="290" stroke="#444" stroke-width="1.6" marker-end="url(#arrowhead)"/>
+<text x="510.0" y="284" text-anchor="middle" font-size="12" fill="#1f2430" font-family="sans-serif">5: キャンセル要求()</text>
+<line x1="580.0" y1="325" x2="440.0" y2="325" stroke="#444" stroke-width="1.6" marker-end="url(#arrowhead)" stroke-dasharray="5,4"/>
+<text x="510.0" y="340" text-anchor="middle" font-size="12" fill="#1f2430" font-family="sans-serif">6: キャンセル完了を表示する()</text>
+<line x1="820.0" y1="215" x2="950.0" y2="155" stroke="#444" stroke-width="1.6" marker-end="url(#arrowhead)"/>
+<text x="930.0" y="177.0" text-anchor="middle" font-size="12" fill="#1f2430">2.1: 予約を検索する()</text>
+<line x1="820.0" y1="255" x2="950.0" y2="180" stroke="#444" stroke-width="1.6" marker-end="url(#arrowhead)"/>
+<text x="940.0" y="215.5" text-anchor="middle" font-size="12" fill="#1f2430">5.1: 予約状態を確認する()</text>
+<line x1="820.0" y1="295" x2="950.0" y2="205" stroke="#444" stroke-width="1.6" marker-end="url(#arrowhead)"/>
+<text x="955.0" y="266.0" text-anchor="middle" font-size="12" fill="#1f2430">5.2: 予約状態をCANCELEDにする()</text>
+<rect x="70" y="440" width="1040" height="150" rx="6" fill="#faf6ee" stroke="#e4d9c3"/>
+<text x="90" y="466" font-size="13" font-weight="700" fill="#1f2430">補足（既存の設計との整合）</text>
+<text x="90" y="488" font-size="12" fill="#1f2430">・「予約確認画面」はUC3で既に定義済みのバウンダリを再利用する（新規バウンダリは不要）</text>
+<text x="90" y="510" font-size="12" fill="#1f2430">・新規に追加するクラスは「予約キャンセル管理」（コントロール）のみ。1ユースケース＝1コントロールの方針を維持</text>
+<text x="90" y="532" font-size="12" fill="#1f2430">・空席数は宿泊日ごとに動的計算する方式（countAvailableRooms）に変更されたため、実装上は「部屋種別の空席数を</text>
+<text x="90" y="554" font-size="12" fill="#1f2430">　1増やす」という明示的なメッセージは不要（キャンセル時に自動的に空席として計上される）。図には5.2までを示す</text>
+</svg>
